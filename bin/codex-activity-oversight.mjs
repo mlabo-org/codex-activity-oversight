@@ -1017,7 +1017,7 @@ async function withAppServer(codexBinary, operation) {
   const timeout = setTimeout(() => failAll(new CliError(`app-server request timed out: ${singleLine(stderr)}`)), 10_000);
   try {
     await request("initialize", {
-      clientInfo: { name: "coding-agent-orchestrator", title: "CAO State Control", version: "0.3.0" },
+      clientInfo: { name: "codex-activity-oversight", title: "CAO State Control", version: "0.3.0" },
       capabilities: { experimentalApi: true, requestAttestation: false },
     });
     child.stdin.write(`${JSON.stringify({ method: "initialized", params: {} })}\n`);
@@ -1432,7 +1432,22 @@ function escapeRegExp(value) {
 }
 
 function printHelp() {
-  process.stdout.write(`coding-agents durable state-control CLI\n\nUsage:\n  coding-agents intake --target-cwd <path> --task <text> --task-id <id> --epoch <id> --scope <text> [--root-thread-id <id>] [--evidence-ref <typed-ref>] [--state-transition continue-related|initialize-unrelated] [--work-type <type>] [--delivery-mode ITERATIVE_DELIVERY|ONE_SHOT_QUALITY] [--one-shot-authority user_request:<ref>]\n  coding-agents context --target-cwd <path> [--task-id <id>]\n  coding-agents hook-event [--codex-binary <path>] < hook-event.json\n  coding-agents reconcile-runtime --target-cwd <path> [--task-id <id>] [--codex-binary <path>]\n  coding-agents begin-work --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --work-id <id> --responsibility <text> --objective <text> --expected-output <text> [--actor-ref <opaque-ref>]\n  coding-agents complete-work|block-work|fail-work|interrupt-work --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --work-id <id> --summary <text> [--changed-paths <text>] [--evidence-refs <typed-refs>] [--blockers <text>] [--unresolved <text>] [--next <text>] [--actor-ref <opaque-ref>]\n  coding-agents decide --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --decision-id <id> --decision <text> --impact <text> --evidence-refs <typed-refs>\n  coding-agents progress --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --item-id <id> --status pending|in_progress|completed|blocked --summary <text> [--evidence-refs <typed-refs>]\n  coding-agents verify --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --check-id <id> --status passed|failed|skipped --detail <text> --covers <contract-ids> [--evidence-refs <typed-refs>]\n  coding-agents finalize --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --decision-coverage <text> --completion-coverage <text> --source-spec-coverage <typed-refs>\n  coding-agents handoff --target-cwd <path> --task-id <id>\n  coding-agents doctor --target-cwd <path>\n\nNative Codex owns live execution. CAO owns exact root-tree binding, deterministic semantic state, known-work closure, Hook triggers, and app-server reconciliation. Runtime completion never implies semantic completion.\n`);
+  const cli = "codex-activity-oversight";
+  const commands = [
+    `${cli} intake --target-cwd <path> --task <text> --task-id <id> --epoch <id> --scope <text> [--root-thread-id <id>] [--evidence-ref <typed-ref>] [--state-transition continue-related|initialize-unrelated] [--work-type <type>] [--delivery-mode ITERATIVE_DELIVERY|ONE_SHOT_QUALITY] [--one-shot-authority user_request:<ref>]`,
+    `${cli} context --target-cwd <path> [--task-id <id>]`,
+    `${cli} hook-event [--codex-binary <path>] < hook-event.json`,
+    `${cli} reconcile-runtime --target-cwd <path> [--task-id <id>] [--codex-binary <path>]`,
+    `${cli} begin-work --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --work-id <id> --responsibility <text> --objective <text> --expected-output <text> [--actor-ref <opaque-ref>]`,
+    `${cli} complete-work|block-work|fail-work|interrupt-work --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --work-id <id> --summary <text> [--changed-paths <text>] [--evidence-refs <typed-refs>] [--blockers <text>] [--unresolved <text>] [--next <text>] [--actor-ref <opaque-ref>]`,
+    `${cli} decide --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --decision-id <id> --decision <text> --impact <text> --evidence-refs <typed-refs>`,
+    `${cli} progress --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --item-id <id> --status pending|in_progress|completed|blocked --summary <text> [--evidence-refs <typed-refs>]`,
+    `${cli} verify --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --check-id <id> --status passed|failed|skipped --detail <text> --covers <contract-ids> [--evidence-refs <typed-refs>]`,
+    `${cli} finalize --target-cwd <path> --task-id <id> --epoch <id> --scope <text> --decision-coverage <text> --completion-coverage <text> --source-spec-coverage <typed-refs>`,
+    `${cli} handoff --target-cwd <path> --task-id <id>`,
+    `${cli} doctor --target-cwd <path>`,
+  ];
+  process.stdout.write(`${cli} durable state-control CLI\n\nUsage:\n  ${commands.join("\n  ")}\n\nNative Codex exclusively owns live execution. CAO owns exact root-tree binding, deterministic semantic state, known-work closure, Hook triggers, and app-server reconciliation. Runtime completion never implies semantic completion.\n`);
 }
 
 await main();

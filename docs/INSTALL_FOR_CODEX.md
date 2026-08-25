@@ -1,4 +1,4 @@
-# Install Coding Agent Orchestrator with Codex
+# Install Codex Activity Oversight with Codex
 
 This is the source-owned installation contract for an agent installing the public plugin. It applies only after the user explicitly requests installation or activation.
 
@@ -7,8 +7,8 @@ This is the source-owned installation contract for an agent installing the publi
 Installation must use the repository as one plugin bundle. The bundle includes, at minimum:
 
 - `.codex-plugin/plugin.json`;
-- `skills/coding-agent-orchestrator/SKILL.md`;
-- `bin/coding-agents.mjs`;
+- `skills/codex-activity-oversight/SKILL.md`;
+- `bin/codex-activity-oversight.mjs`;
 - `hooks/hooks.json`; and
 - `scripts/cao-state-hook.mjs`.
 
@@ -19,7 +19,7 @@ Installation must use the repository as one plugin bundle. The bundle includes, 
 Resolve the current user's home directory from the operating system. The canonical checkout is:
 
 ```text
-<user-home>/plugins/coding-agent-orchestrator
+<user-home>/plugins/codex-activity-oversight
 ```
 
 If the repository is not there, resolve its Git origin and clone it to that exact location. If the destination already exists, continue only when it is this repository and no user change would be overwritten. Never delete, reset, move, or replace an ambiguous destination. Never edit `~/.codex/plugins/cache/` directly.

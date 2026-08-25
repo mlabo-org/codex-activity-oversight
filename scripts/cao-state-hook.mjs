@@ -3,7 +3,7 @@
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const cliPath = fileURLToPath(new URL("../bin/coding-agents.mjs", import.meta.url));
+const cliPath = fileURLToPath(new URL("../bin/codex-activity-oversight.mjs", import.meta.url));
 const child = spawn(process.execPath, [cliPath, "hook-event"], {
   stdio: ["inherit", "inherit", "inherit"],
 });

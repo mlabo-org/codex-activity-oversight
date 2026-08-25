@@ -1,14 +1,14 @@
 {
-  "name": "coding-agent-orchestrator-marketplace",
+  "name": "codex-activity-oversight-marketplace",
   "interface": {
-    "displayName": "Coding Agent Orchestrator"
+    "displayName": "Codex Activity Oversight"
   },
   "plugins": [
     {
-      "name": "coding-agent-orchestrator",
+      "name": "codex-activity-oversight",
       "source": {
         "source": "url",
-        "url": "https://github.com/mlabo-org/coding-agent-orchestrator.git",
+        "url": "https://github.com/mlabo-org/codex-activity-oversight.git",
         "ref": "main"
       },
       "policy": {

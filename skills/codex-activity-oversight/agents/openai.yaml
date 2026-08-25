@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Activity Oversight"
+  short_description: "Durable CAO state control for native Codex work"
+  default_prompt: "Use $codex-activity-oversight to bind this coding task to exact .CAO state; Native Codex exclusively owns official subagent execution."
+policy:
+  allow_implicit_invocation: false

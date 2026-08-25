@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const CLI = path.join(REPO_ROOT, "bin", "coding-agents.mjs");
+const CLI = path.join(REPO_ROOT, "bin", "codex-activity-oversight.mjs");
 
 test("semantic writes reject task, epoch, and scope mismatches", () => {
   const repo = fixture("identity-state");
@@ -36,7 +36,7 @@ test("completed semantic work requires typed evidence while blocked work preserv
     const weak = run(repo, ["complete-work", ...identity("typed-evidence"), "--work-id", "W-complete", "--summary", "done", "--evidence-refs", "checked carefully"]);
     assert.notEqual(weak.status, 0);
     assert.match(weak.stderr, /must use typed references/);
-    const accepted = run(repo, ["complete-work", ...identity("typed-evidence"), "--work-id", "W-complete", "--summary", "done", "--evidence-refs", "command:node --check bin/coding-agents.mjs exit:0"]);
+    const accepted = run(repo, ["complete-work", ...identity("typed-evidence"), "--work-id", "W-complete", "--summary", "done", "--evidence-refs", "command:node --check bin/codex-activity-oversight.mjs exit:0"]);
     assert.equal(accepted.status, 0, accepted.stderr);
 
     assert.equal(run(repo, beginArgs("typed-evidence", "W-blocked")).status, 0);

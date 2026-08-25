@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "coding-agent-orchestrator/coding-agent-orchestrator-input/v1",
-  "title": "Coding Agent Orchestrator state-control input",
+  "$id": "codex-activity-oversight/codex-activity-oversight-input/v1",
+  "title": "Codex Activity Oversight state-control input",
   "description": "An explicitly activated coding objective bound to an exact Codex root thread and deterministic .CAO state transition.",
   "type": "object",
   "required": [

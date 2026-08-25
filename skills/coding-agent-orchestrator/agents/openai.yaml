@@ -1,6 +1,0 @@
-interface:
-  display_name: "Coding Agent Orchestrator"
-  short_description: "Durable CAO state control for native Codex work"
-  default_prompt: "Use $coding-agent-orchestrator to bind this coding task to exact .CAO state while native Codex chooses the execution topology."
-policy:
-  allow_implicit_invocation: false

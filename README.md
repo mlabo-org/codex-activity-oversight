@@ -1,16 +1,16 @@
-# Coding Agent Orchestrator
+# Codex Activity Oversight
 
 [日本語](README.ja.md) | English
 
 > **Architecture update:** Official Codex Orchestration v2 and its model selection, including Luna, now provide the subagent execution quality CAO needs. CAO therefore no longer spawns, selects, routes, or manages subagents itself. It now leaves live orchestration entirely to native Codex and uses the official app-server plus Hooks as observation, recording, state-rehydration, and continuation triggers. Existing CAO-owned spawn and worker-management behavior has been retired.
 
-Coding Agent Orchestrator (CAO) is the plugin that provides higher-level control and durable records for Agents and native orchestration during coding. “Orchestrator” in the name describes this supervisory control plane: CAO anchors the objective, scope, decisions, work state, runtime observations, evidence, and handoff while native Codex performs the actual orchestration.
+Codex Activity Oversight (CAO) is the plugin that provides exact-thread durable state control for native Codex coding work. CAO does not orchestrate agents: Native Codex exclusively owns decomposition, official subagent launch and routing, model and reasoning selection, recursive delegation, supervision, integration, and acceptance. CAO anchors the objective, scope, decisions, work state, runtime observations, evidence, and handoff around that official execution.
 
 CAO does not launch, select, or route subagents. Native Codex owns decomposition, models and reasoning, spawn and fork behavior, recursive delegation, peer messaging, live supervision, integration, and acceptance. CAO keeps that changing execution topology bound to one durable contract.
 
 ## Activation
 
-CAO activates only through a leading `CAO` / `CAOで` request, `$coding-agent-orchestrator`, explicit skill selection, or explicit continuation of an active CAO task. Generic coding, generic subagent requests, incidental “CAO” text, and `.CAO/` presence alone do not activate it.
+CAO activates only through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit skill selection, or explicit continuation of an active CAO task. Generic coding, generic subagent requests, incidental “CAO” text, and `.CAO/` presence alone do not activate it.
 
 ## State control
 
@@ -22,7 +22,7 @@ CAO activates only through a leading `CAO` / `CAOで` request, `$coding-agent-or
 
 ## Hook-based control
 
-The public plugin bundle includes `hooks/hooks.json` and `scripts/cao-state-hook.mjs`. Each registered command Hook calls the bundled runner through `${PLUGIN_ROOT}`, which forwards the event to `coding-agents hook-event`. Hooks locate the nearest `.CAO/` and act only when the event belongs to its exact bound root-thread tree.
+The public plugin bundle includes `hooks/hooks.json` and `scripts/cao-state-hook.mjs`. Each registered command Hook calls the bundled runner through `${PLUGIN_ROOT}`, which forwards the event to `codex-activity-oversight hook-event`. Hooks locate the nearest `.CAO/` and act only when the event belongs to its exact bound root-thread tree.
 
 | Hook | Identity check | Effect |
 | --- | --- | --- |
@@ -78,28 +78,28 @@ CAO adds `.CAO/` to the target repository’s `.git/info/exclude`, keeping local
 ## CLI
 
 ```text
-coding-agents intake
-coding-agents context
-coding-agents begin-work
-coding-agents complete-work | block-work | fail-work | interrupt-work
-coding-agents decide
-coding-agents progress
-coding-agents verify
-coding-agents reconcile-runtime
-coding-agents finalize
-coding-agents handoff
-coding-agents doctor
+codex-activity-oversight intake
+codex-activity-oversight context
+codex-activity-oversight begin-work
+codex-activity-oversight complete-work | block-work | fail-work | interrupt-work
+codex-activity-oversight decide
+codex-activity-oversight progress
+codex-activity-oversight verify
+codex-activity-oversight reconcile-runtime
+codex-activity-oversight finalize
+codex-activity-oversight handoff
+codex-activity-oversight doctor
 ```
 
-`hook-event` is the internal Hook entrypoint, not a worker runner. Run `coding-agents --help` for full arguments.
+`hook-event` is the internal Hook entrypoint, not an orchestrator or worker runner. Run `codex-activity-oversight --help` for full arguments.
 
 ## Agent-installable public bundle
 
 Clone the public repository to the canonical personal-plugin location:
 
 ```bash
-git clone https://github.com/mlabo-org/coding-agent-orchestrator.git ~/plugins/coding-agent-orchestrator
-cd ~/plugins/coding-agent-orchestrator
+git clone https://github.com/mlabo-org/codex-activity-oversight.git ~/plugins/codex-activity-oversight
+cd ~/plugins/codex-activity-oversight
 npm test
 npm run plugin:install:check
 npm run plugin:install

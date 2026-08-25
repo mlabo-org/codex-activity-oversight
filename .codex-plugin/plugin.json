@@ -1,15 +1,15 @@
 {
-  "name": "coding-agent-orchestrator",
+  "name": "codex-activity-oversight",
   "version": "0.3.0",
-  "description": "Explicit-only Coding Agent Orchestrator (CAO) for exact-thread deterministic .CAO state control while native Codex owns execution topology.",
-  "homepage": "https://github.com/mlabo-org/coding-agent-orchestrator#readme",
-  "repository": "https://github.com/mlabo-org/coding-agent-orchestrator",
+  "description": "Explicit-only Codex Activity Oversight (CAO) for exact-thread durable .CAO state control while native Codex owns all execution topology.",
+  "homepage": "https://github.com/mlabo-org/codex-activity-oversight#readme",
+  "repository": "https://github.com/mlabo-org/codex-activity-oversight",
   "license": "MIT",
   "skills": "./skills/",
   "keywords": [
-    "coding-agent-orchestrator",
+    "codex-activity-oversight",
     "cao",
-    "\u30b3\u30fc\u30c7\u30a3\u30f3\u30b0-\u30a8\u30fc\u30b8\u30a7\u30f3\u30c8-\u30aa\u30fc\u30b1\u30b9\u30c8\u30ec\u30fc\u30bf\u30fc",
+    "codex-activity-oversight-jp",
     "native-codex",
     "exact-thread-binding",
     "official-hooks",
@@ -23,12 +23,12 @@
     "coding-continuity"
   ],
   "interface": {
-    "displayName": "Coding Agent Orchestrator",
+    "displayName": "Codex Activity Oversight",
     "shortDescription": "Exact-thread state control for native Codex coding.",
-    "longDescription": "Coding Agent Orchestrator binds an explicit coding objective to deterministic .CAO state. Native Codex owns decomposition, subagent choice, model selection, recursive delegation, peer messaging, supervision, integration, and acceptance. Official Hooks provide immediate state rehydration and lifecycle events; official app-server readback emits reconciliation receipts that expose incomplete lifecycle observations. Runtime completion never becomes semantic completion, and finalization accepts only passed verifications that explicitly declare the active contract IDs they cover.",
+    "longDescription": "Codex Activity Oversight (CAO) binds an explicit coding objective to deterministic .CAO state. Native Codex exclusively owns decomposition, official subagent launch and routing, model and reasoning selection, recursive delegation, peer messaging, supervision, integration, and acceptance. Official Hooks provide immediate state rehydration and lifecycle observations; official app-server readback emits reconciliation receipts that expose incomplete lifecycle observations. Runtime completion never becomes semantic completion, and finalization accepts only passed verifications that explicitly declare the active contract IDs they cover.",
     "developerName": "Makoto Suzuki",
     "category": "Developer Tools",
-    "websiteURL": "https://github.com/mlabo-org/coding-agent-orchestrator",
+    "websiteURL": "https://github.com/mlabo-org/codex-activity-oversight",
     "capabilities": [
       "CAO Explicit Activation",
       "Deterministic .CAO State Control",
@@ -44,7 +44,7 @@
     ],
     "defaultPrompt": [
       "CAO bind this coding task to exact .CAO state while native Codex chooses execution.",
-      "Use $coding-agent-orchestrator for Hook-triggered state control and app-server reconciliation.",
+      "Use $codex-activity-oversight for Hook-triggered state control and app-server reconciliation.",
       "Continue the active CAO workflow from its exact durable state."
     ],
     "brandColor": "#2563EB"

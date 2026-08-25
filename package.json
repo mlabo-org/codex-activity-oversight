@@ -1,5 +1,5 @@
 {
-  "name": "coding-agent-orchestrator",
+  "name": "codex-activity-oversight",
   "version": "0.3.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "node": ">=22"
   },
   "bin": {
-    "coding-agents": "bin/coding-agents.mjs"
+    "codex-activity-oversight": "bin/codex-activity-oversight.mjs"
   },
   "scripts": {
     "test": "node --test tests/*.test.mjs",

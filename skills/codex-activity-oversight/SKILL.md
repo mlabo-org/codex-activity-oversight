@@ -1,17 +1,17 @@
 ---
-name: coding-agent-orchestrator
-description: Control explicit CAO / CAOで / $coding-agent-orchestrator coding workflows through exact-thread .CAO state, Hook rehydration, and app-server reconciliation. Native Codex owns subagents and execution topology; generic coding does not trigger CAO.
+name: codex-activity-oversight
+description: Control explicit CAO / CAOで / $codex-activity-oversight workflows through exact-thread .CAO state, Hook rehydration, and app-server reconciliation. Native Codex exclusively owns official subagent execution topology; generic coding does not trigger CAO.
 ---
 
-# Coding Agent Orchestrator
+# Codex Activity Oversight
 
 This `SKILL.md` is the local execution contract for this skill when selected. Its trigger, workflow, tool, file, and output boundaries are binding only inside this skill's scope. It does not override system or developer instructions, explicit user requests, applicable `AGENTS.md` files, or more specific local contracts.
 
-CAO is a state-control plane, not a subagent launcher.
+CAO means Codex Activity Oversight: an exact-thread durable state-control plane, not an orchestrator or subagent launcher.
 
 ## Activation
 
-Activate only when the current user explicitly selects this workflow through a leading `CAO` / `CAOで` request, `$coding-agent-orchestrator`, explicit bundled-skill selection, or an explicit continuation of an already active CAO workflow.
+Activate only when the current user explicitly selects this workflow through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit bundled-skill selection, or an explicit continuation of an already active CAO workflow.
 
 Do not activate from plugin inspection, a generic coding request, a generic subagent request, incidental `CAO` text, `.CAO` directory presence, or prior state alone.
 

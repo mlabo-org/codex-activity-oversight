@@ -14,27 +14,27 @@ test("public metadata exposes explicit state control without owning native execu
   const manifest = JSON.parse(read(".codex-plugin/plugin.json"));
   const creator = JSON.parse(read("creator-contract.json"));
   const capability = JSON.parse(read("local-capability-manifest.json"));
-  const skill = read("skills/coding-agent-orchestrator/SKILL.md");
-  const metadata = read("skills/coding-agent-orchestrator/agents/openai.yaml");
+  const skill = read("skills/codex-activity-oversight/SKILL.md");
+  const metadata = read("skills/codex-activity-oversight/agents/openai.yaml");
 
-  assert.equal(manifest.name, "coding-agent-orchestrator");
+  assert.equal(manifest.name, "codex-activity-oversight");
   assert.match(manifest.description, /explicit-only.*state control/i);
   assert.ok(manifest.interface.capabilities.includes("Exact Root-Thread State Binding"));
   assert.ok(manifest.interface.capabilities.includes("Official Hook Event Capture"));
   assert.ok(manifest.interface.capabilities.includes("App-Server Runtime Reconciliation"));
   assert.ok(manifest.interface.capabilities.includes("Declared Verification Coverage"));
   assert.ok(manifest.interface.capabilities.includes("Completed Task Handoff"));
-  assert.match(manifest.interface.longDescription, /Native Codex owns.*recursive delegation.*peer messaging/is);
+  assert.match(manifest.interface.longDescription, /Native Codex exclusively owns.*recursive delegation.*peer messaging/is);
   assert.match(manifest.interface.longDescription, /runtime completion.*semantic completion/i);
 
-  assert.match(skill, /CAO is a state-control plane, not a subagent launcher/i);
+  assert.match(skill, /CAO means Codex Activity Oversight.*not an orchestrator or subagent launcher/i);
   assert.match(skill, /SubagentStart.*SubagentStop.*app-server/is);
   assert.match(skill, /exact bound root thread tree/i);
   assert.match(skill, /must not infer semantic completion/i);
   assert.match(metadata, /Durable CAO state control/);
 
   assert.equal(creator.workflow_contract.execution_owner, "native-codex");
-  assert.equal(creator.workflow_contract.state_owner, "coding-agent-orchestrator");
+  assert.equal(creator.workflow_contract.state_owner, "codex-activity-oversight");
   assert.match(creator.workflow_contract.runtime_observation_rule, /Hooks.*app-server/i);
   assert.equal(capability.capabilities[0].executionClass, "state_controller");
   assert.match(capability.capabilities[0].runtimeBinding.instruction, /exact root thread/i);
@@ -50,12 +50,12 @@ test("plugin hooks cover root rehydration, descendant lifecycle, and known-work 
     assert.ok(handler.statusMessage.length > 0);
   }
   assert.doesNotThrow(() => JSON.parse(read("hooks/hooks.json")));
-  assert.match(read("scripts/cao-state-hook.mjs"), /bin\/coding-agents\.mjs/);
+  assert.match(read("scripts/cao-state-hook.mjs"), /bin\/codex-activity-oversight\.mjs/);
 });
 
 test("capability schemas expose root binding and separate runtime observations from semantic state", () => {
-  const input = JSON.parse(read("schemas/v1/leaves/coding-agent-orchestrator-input.schema.json"));
-  const output = JSON.parse(read("schemas/v1/leaves/coding-agent-orchestrator-output.schema.json"));
+  const input = JSON.parse(read("schemas/v1/leaves/codex-activity-oversight-input.schema.json"));
+  const output = JSON.parse(read("schemas/v1/leaves/codex-activity-oversight-output.schema.json"));
   assert.ok(input.required.includes("rootThreadId"));
   assert.match(input.properties.rootThreadId.description, /exact.*root.*thread/i);
   assert.ok(output.properties.workflowState.required.includes("rootThreadId"));
@@ -68,15 +68,15 @@ test("capability schemas expose root binding and separate runtime observations f
 test("active source no longer exposes CAO-owned worker routing or lifecycle control", () => {
   const activePaths = [
     "README.md",
-    "skills/coding-agent-orchestrator/SKILL.md",
-    "skills/coding-agent-orchestrator/agents/openai.yaml",
+    "skills/codex-activity-oversight/SKILL.md",
+    "skills/codex-activity-oversight/agents/openai.yaml",
     ".codex-plugin/plugin.json",
     "creator-contract.json",
     "local-capability-manifest.json",
-    "schemas/v1/leaves/coding-agent-orchestrator-input.schema.json",
-    "schemas/v1/leaves/coding-agent-orchestrator-output.schema.json",
-    "docs/specs/coding-agent-orchestrator-gui-subagent-spec.md",
-    "docs/specs/coding-agent-orchestrator-state-control-spec.md",
+    "schemas/v1/leaves/codex-activity-oversight-input.schema.json",
+    "schemas/v1/leaves/codex-activity-oversight-output.schema.json",
+    "docs/specs/codex-activity-oversight-native-observation-spec.md",
+    "docs/specs/codex-activity-oversight-state-control-spec.md",
   ];
   const source = activePaths.map(read).join("\n");
   const retired = [

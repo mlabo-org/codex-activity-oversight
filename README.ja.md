@@ -1,16 +1,16 @@
-# Coding Agent Orchestrator
+# Codex Activity Oversight
 
 日本語 | [English](README.md)
 
 > **アーキテクチャ更新:** 公式Codex Orchestration v2と、Lunaを含むモデル選択が、CAOの求めるsubagent実行を十分に担える状態へ更新されました。これに伴い、CAOプラグイン自身がsubagentをspawn・選択・配分・管理する仕組みは廃止しました。現在はライブオーケストレーションをすべてネイティブCodexへ任せ、公式app-serverとHookを、実行観測・記録・状態再注入・続行判定のトリガーとして使用します。
 
-Coding Agent Orchestrator（CAO）は、コーディング時にAgentとネイティブなオーケストレーションを上位から管制し、その状態を永続的に記録するプラグインです。名前にある「Orchestrator」はworkerを直接配分する実行エンジンという意味ではなく、目的、scope、decision、work状態、runtime観測、証跡、handoffを固定する上位管制面を表しています。実際のオーケストレーションはネイティブCodexが行い、CAOはその全体を1つの永続契約へ束縛します。
+Codex Activity Oversight（CAO）は、ネイティブCodexのコーディング作業を正確なthreadへ束縛し、状態を永続記録するプラグインです。CAOはオーケストレーターではありません。タスク分解、公式subagentの起動・配分、model／reasoning選択、再帰委任、監督、統合、採否判断はすべてネイティブCodexが所有し、CAOはその公式実行を`.CAO`の永続契約として管制します。
 
 CAO自身はsubagentを起動・選択・配分しません。タスク分解、モデルとreasoningの選択、spawn／fork、再帰的委任、agent間メッセージ、ライブ監督、統合、採否判断はネイティブCodexが所有します。
 
 ## 有効化条件
 
-先頭の `CAO` / `CAOで` 指示、`$coding-agent-orchestrator`、skillの明示選択、またはactiveなCAOタスクの明示的続行時だけ有効になります。一般的なコーディング／subagent依頼、偶然の「CAO」表記、`.CAO/` の存在だけでは有効になりません。
+先頭の `CAO` / `CAOで` 指示、`$codex-activity-oversight`、skillの明示選択、またはactiveなCAOタスクの明示的続行時だけ有効になります。一般的なコーディング／subagent依頼、偶然の「CAO」表記、`.CAO/` の存在だけでは有効になりません。
 
 ## 状態管制
 
@@ -22,7 +22,7 @@ CAO自身はsubagentを起動・選択・配分しません。タスク分解、
 
 ## Hookによる管制
 
-公開plugin bundleには `hooks/hooks.json` と `scripts/cao-state-hook.mjs` を同梱します。各command Hookは `${PLUGIN_ROOT}` 経由で同梱runnerを呼び、`coding-agents hook-event` へイベントを渡します。Hookは最寄りの `.CAO/` を探し、その正確なroot-thread treeに属するイベントだけへ作用します。
+公開plugin bundleには `hooks/hooks.json` と `scripts/cao-state-hook.mjs` を同梱します。各command Hookは `${PLUGIN_ROOT}` 経由で同梱runnerを呼び、`codex-activity-oversight hook-event` へイベントを渡します。Hookは最寄りの `.CAO/` を探し、その正確なroot-thread treeに属するイベントだけへ作用します。
 
 | Hook | identity確認 | 効果 |
 | --- | --- | --- |
@@ -78,28 +78,28 @@ CAOは対象repoの `.git/info/exclude` に `.CAO/` を追加し、tracked `.git
 ## CLI
 
 ```text
-coding-agents intake
-coding-agents context
-coding-agents begin-work
-coding-agents complete-work | block-work | fail-work | interrupt-work
-coding-agents decide
-coding-agents progress
-coding-agents verify
-coding-agents reconcile-runtime
-coding-agents finalize
-coding-agents handoff
-coding-agents doctor
+codex-activity-oversight intake
+codex-activity-oversight context
+codex-activity-oversight begin-work
+codex-activity-oversight complete-work | block-work | fail-work | interrupt-work
+codex-activity-oversight decide
+codex-activity-oversight progress
+codex-activity-oversight verify
+codex-activity-oversight reconcile-runtime
+codex-activity-oversight finalize
+codex-activity-oversight handoff
+codex-activity-oversight doctor
 ```
 
-`hook-event` は内部Hook entrypointでありworker runnerではありません。全引数は `coding-agents --help` で確認できます。
+`hook-event` は内部Hook entrypointでありオーケストレーター／worker runnerではありません。全引数は `codex-activity-oversight --help` で確認できます。
 
 ## Agentが自動インストールできる公開bundle
 
 公開repoをcanonicalなpersonal plugin locationへcloneし、次を実行します。
 
 ```bash
-git clone https://github.com/mlabo-org/coding-agent-orchestrator.git ~/plugins/coding-agent-orchestrator
-cd ~/plugins/coding-agent-orchestrator
+git clone https://github.com/mlabo-org/codex-activity-oversight.git ~/plugins/codex-activity-oversight
+cd ~/plugins/codex-activity-oversight
 npm test
 npm run plugin:install:check
 npm run plugin:install

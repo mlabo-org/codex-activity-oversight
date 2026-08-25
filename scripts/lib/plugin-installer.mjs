@@ -1,14 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-export const PLUGIN_NAME = "coding-agent-orchestrator";
+export const PLUGIN_NAME = "codex-activity-oversight";
 export const PLUGIN_SOURCE_PATH = `./plugins/${PLUGIN_NAME}`;
 export const DEFAULT_MARKETPLACE_NAME = "personal";
 export const FALLBACK_MARKETPLACE_NAME = `${PLUGIN_NAME}-local`;
 export const REQUIRED_PLUGIN_FILES = [
   ".codex-plugin/plugin.json",
-  "skills/coding-agent-orchestrator/SKILL.md",
-  "bin/coding-agents.mjs",
+  "skills/codex-activity-oversight/SKILL.md",
+  "bin/codex-activity-oversight.mjs",
   "hooks/hooks.json",
   "scripts/cao-state-hook.mjs"
 ];
@@ -91,7 +91,7 @@ export function planMarketplace({ marketplaceDocument, configuredMarketplaces, h
   let document;
   if (marketplaceDocument === null) {
     const name = chooseNewMarketplaceName(configured, expectedRoot);
-    document = { name, interface: { displayName: name === DEFAULT_MARKETPLACE_NAME ? "Personal" : "Coding Agent Orchestrator Local" }, plugins: [] };
+    document = { name, interface: { displayName: name === DEFAULT_MARKETPLACE_NAME ? "Personal" : "Codex Activity Oversight Local" }, plugins: [] };
   } else {
     validateMarketplaceDocument(marketplaceDocument);
     document = structuredClone(marketplaceDocument);

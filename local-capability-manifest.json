@@ -2,13 +2,13 @@
   "manifestVersion": "local-capability-manifest/v1",
   "publisher": "suzuki-makoto",
   "packageKind": "plugin",
-  "packageId": "coding-agent-orchestrator",
+  "packageId": "codex-activity-oversight",
   "descriptorVersion": "0.3.0",
   "capabilities": [
     {
-      "leafId": "coding-agent-orchestrator",
-      "title": "Coding Agent Orchestrator",
-      "description": "Bind an explicitly activated coding objective to deterministic .CAO state while native Codex owns execution topology.",
+      "leafId": "codex-activity-oversight",
+      "title": "Codex Activity Oversight",
+      "description": "Bind an explicitly activated coding objective to deterministic .CAO state while Native Codex exclusively owns official subagent execution topology.",
       "executionClass": "state_controller",
       "runtimeBinding": {
         "kind": "state_controller",
@@ -33,13 +33,13 @@
       ],
       "inputSchema": {
         "schemaVersion": "local-capability-schema/v1",
-        "schemaId": "coding-agent-orchestrator/coding-agent-orchestrator-input/v1",
-        "path": "schemas/v1/leaves/coding-agent-orchestrator-input.schema.json"
+        "schemaId": "codex-activity-oversight/codex-activity-oversight-input/v1",
+        "path": "schemas/v1/leaves/codex-activity-oversight-input.schema.json"
       },
       "outputSchema": {
         "schemaVersion": "local-capability-schema/v1",
-        "schemaId": "coding-agent-orchestrator/coding-agent-orchestrator-output/v1",
-        "path": "schemas/v1/leaves/coding-agent-orchestrator-output.schema.json"
+        "schemaId": "codex-activity-oversight/codex-activity-oversight-output/v1",
+        "path": "schemas/v1/leaves/codex-activity-oversight-output.schema.json"
       },
       "inputPorts": [],
       "outputPorts": []

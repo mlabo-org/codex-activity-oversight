@@ -7,7 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const CLI = path.join(REPO_ROOT, "bin", "coding-agents.mjs");
+const CLI = path.join(REPO_ROOT, "bin", "codex-activity-oversight.mjs");
 const ROOT_THREAD_ID = "01911111-1111-7111-8111-111111111111";
 const CHILD_THREAD_ID = "01922222-2222-7222-8222-222222222222";
 
@@ -69,7 +69,7 @@ test("material work is opened once, resolved once, and blocks finalization while
 
     const complete = runCli(repo, [
       "complete-work", ...identityArgs("work-state"), "--work-id", "W-1",
-      "--summary", "implemented", "--changed-paths", "bin/coding-agents.mjs",
+      "--summary", "implemented", "--changed-paths", "bin/codex-activity-oversight.mjs",
       "--evidence-refs", "test:workflow-state result:pass",
     ]);
     assert.equal(complete.status, 0, complete.stderr);

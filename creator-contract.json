@@ -1,15 +1,15 @@
 {
   "schema_version": "creator-contract/v2",
   "kind": "plugin",
-  "capability_id": "coding-agent-orchestrator",
+  "capability_id": "codex-activity-oversight",
   "official_creator": "plugin-creator",
   "routing": {
     "task_class": "Explicitly selected CAO durable state control for native Codex coding work",
     "natural_language_triggers": [
       "CAO <coding objective>",
       "CAOで<coding objective>",
-      "$coding-agent-orchestrator",
-      "Use Coding Agent Orchestrator",
+      "$codex-activity-oversight",
+      "Use Codex Activity Oversight",
       "continue this active CAO workflow"
     ],
     "primary_route": "Bind the explicit objective and exact root thread into .CAO before material work; rehydrate matching roots and descendants through official Hooks; reconcile native thread ancestry and collaboration facts through official app-server readback; record semantic work, decisions, progress, evidence, finalization, and handoff without owning execution topology.",
@@ -30,7 +30,7 @@
       ],
       "trigger_phrases": [
         "CAOでこの実装を状態管制して",
-        "Use $coding-agent-orchestrator",
+        "Use $codex-activity-oversight",
         "Continue the active CAO workflow"
       ],
       "artifact_or_tool_terms": [
@@ -41,25 +41,25 @@
         "SubagentStop",
         "thread/read",
         "thread/list",
-        "bin/coding-agents.mjs"
+        "bin/codex-activity-oversight.mjs"
       ],
       "aliases": [
-        "coding-agent-orchestrator",
-        "Coding Agent Orchestrator",
+        "codex-activity-oversight",
+        "Codex Activity Oversight",
         "CAO",
-        "コーディング・エージェント・オーケストレーター"
+        "Codex Activity Oversight"
       ]
     },
     "openai_yaml": {
       "manifests": [
         {
-          "skill_root": "skills/coding-agent-orchestrator",
-          "path": "skills/coding-agent-orchestrator/agents/openai.yaml",
+          "skill_root": "skills/codex-activity-oversight",
+          "path": "skills/codex-activity-oversight/agents/openai.yaml",
           "document": {
             "interface": {
-              "display_name": "Coding Agent Orchestrator",
+              "display_name": "Codex Activity Oversight",
               "short_description": "Durable CAO state control for native Codex work",
-              "default_prompt": "Use $coding-agent-orchestrator to bind this coding task to exact .CAO state while native Codex chooses the execution topology."
+              "default_prompt": "Use $codex-activity-oversight to bind this coding task to exact .CAO state; Native Codex exclusively owns official subagent execution."
             },
             "policy": {
               "allow_implicit_invocation": false
@@ -101,7 +101,7 @@
     "source_of_truth": ".",
     "generated_or_runtime_paths": [
       ".CAO/",
-      "~/.codex/plugins/cache/local-plugins/coding-agent-orchestrator"
+      "~/.codex/plugins/cache/local-plugins/codex-activity-oversight"
     ],
     "forbidden_source_paths": [
       ".CAO/",
@@ -113,7 +113,7 @@
   },
   "workflow_contract": {
     "execution_owner": "native-codex",
-    "state_owner": "coding-agent-orchestrator",
+    "state_owner": "codex-activity-oversight",
     "runtime_observation_rule": "Official SessionStart, SubagentStart, SubagentStop, and Stop Hooks provide immediate events; official app-server thread/read and thread/list data reconcile exact ancestry and collaboration facts into a typed runtime receipt that exposes incomplete lifecycle observations.",
     "semantic_completion_rule": "Runtime completion is never semantic completion. Only parent-integrated work results and the admitted acceptance evidence can close semantic state.",
     "state_rule": ".CAO is the exact-root-bound state SSOT; .coding-agents is migration input only.",
