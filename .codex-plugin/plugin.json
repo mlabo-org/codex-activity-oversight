@@ -1,6 +1,6 @@
 {
   "name": "codex-activity-oversight",
-  "version": "0.3.0",
+  "version": "0.1.0",
   "description": "Explicit-only Codex Activity Oversight (CAO) for exact-thread durable .CAO state control while native Codex owns all execution topology.",
   "homepage": "https://github.com/mlabo-org/codex-activity-oversight#readme",
   "repository": "https://github.com/mlabo-org/codex-activity-oversight",
