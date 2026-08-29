@@ -10,7 +10,7 @@ import {
   validatePluginBundle
 } from "../scripts/lib/plugin-installer.mjs";
 
-const manifest = { name: PLUGIN_NAME, version: "0.3.0" };
+const manifest = { name: PLUGIN_NAME, version: "0.1.0" };
 const hookRegistration = { hooks: [{ type: "command", command: 'node "${PLUGIN_ROOT}/scripts/cao-state-hook.mjs"' }] };
 const hooksDocument = { hooks: Object.fromEntries(REQUIRED_HOOK_EVENTS.map((event) => [event, [hookRegistration]])) };
 
@@ -18,6 +18,12 @@ test("complete bundle exposes all public Hook files and events", () => {
   assert.deepEqual(validatePluginBundle({ manifest, hooksDocument, presentFiles: REQUIRED_PLUGIN_FILES }), []);
   const incomplete = validatePluginBundle({ manifest, hooksDocument: { hooks: {} }, presentFiles: REQUIRED_PLUGIN_FILES.filter((file) => file !== "hooks/hooks.json") });
   assert.deepEqual(incomplete.map((entry) => entry.code), ["PLUGIN_BUNDLE_INCOMPLETE", "HOOK_BUNDLE_INCOMPLETE"]);
+});
+
+test("manifest compatibility version is fixed", () => {
+  assert.deepEqual(validatePluginBundle({ manifest, hooksDocument, presentFiles: REQUIRED_PLUGIN_FILES }), []);
+  const blocked = validatePluginBundle({ manifest: { ...manifest, version: "0.3.0" }, hooksDocument, presentFiles: REQUIRED_PLUGIN_FILES });
+  assert.deepEqual(blocked.map((entry) => entry.code), ["MANIFEST_VERSION_MISMATCH"]);
 });
 
 test("install plan registers the complete canonical source through the personal marketplace", () => {
@@ -36,6 +42,31 @@ test("existing entries are preserved and conflicting plugin sources fail closed"
   assert.equal(added.document.plugins[0].name, "other");
   assert.equal(added.document.plugins[1].name, PLUGIN_NAME);
   assert.throws(() => planMarketplace({ marketplaceDocument: { name: "personal", plugins: [{ name: PLUGIN_NAME, source: { source: "local", path: "./wrong" } }] }, configuredMarketplaces: { marketplaces: [{ name: "personal", root: "/home/reader" }] }, homeDir: "/home/reader" }), /different marketplace source/);
+});
+
+test("canonicalizes matching entries without dropping unknown or unrelated fields", () => {
+  const existing = {
+    name: "personal",
+    interface: { displayName: "Personal", custom: true },
+    plugins: [
+      { name: "other", source: { source: "local", path: "./plugins/other" }, custom: "keep" },
+      { name: PLUGIN_NAME, source: { source: "local", path: `./plugins/${PLUGIN_NAME}` }, policy: { installation: "BLOCKED" }, category: "Productivity", custom: "keep" }
+    ],
+    customRootField: "keep"
+  };
+  const planned = planMarketplace({ marketplaceDocument: existing, configuredMarketplaces: { marketplaces: [{ name: "personal", root: "/home/reader" }] }, homeDir: "/home/reader" });
+  assert.equal(planned.entryState, "canonicalized");
+  assert.equal(planned.document.customRootField, "keep");
+  assert.equal(planned.document.plugins[0].custom, "keep");
+  assert.equal(planned.document.plugins[1].custom, "keep");
+  assert.deepEqual(planned.document.plugins[1].policy, { installation: "AVAILABLE", authentication: "ON_INSTALL" });
+  assert.equal(planned.document.plugins[1].category, "Developer Tools");
+});
+
+test("rejects empty or whitespace-only marketplace names", () => {
+  for (const name of ["", "   ", "\t\n"]) {
+    assert.throws(() => planMarketplace({ marketplaceDocument: { name, plugins: [] }, configuredMarketplaces: { marketplaces: [] }, homeDir: "/home/reader" }), /non-empty name/);
+  }
 });
 
 test("noncanonical checkout and unsupported Node are blockers", () => {

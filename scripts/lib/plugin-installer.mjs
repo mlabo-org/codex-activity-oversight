@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 export const PLUGIN_NAME = "codex-activity-oversight";
+export const PLUGIN_COMPATIBILITY_VERSION = "0.1.0";
 export const PLUGIN_SOURCE_PATH = `./plugins/${PLUGIN_NAME}`;
 export const DEFAULT_MARKETPLACE_NAME = "personal";
 export const FALLBACK_MARKETPLACE_NAME = `${PLUGIN_NAME}-local`;
@@ -28,7 +29,9 @@ export function validatePluginBundle({ manifest, hooksDocument, presentFiles }) 
     blockers.push({ code: "MANIFEST_NAME_MISMATCH", message: `Expected manifest name ${PLUGIN_NAME}.` });
   }
   if (!manifest || typeof manifest.version !== "string" || manifest.version.length === 0) {
-    blockers.push({ code: "MANIFEST_VERSION_MISSING", message: "The plugin manifest must contain a non-empty version." });
+    blockers.push({ code: "MANIFEST_VERSION_MISSING", message: `The plugin manifest must contain compatibility version ${PLUGIN_COMPATIBILITY_VERSION}.` });
+  } else if (manifest.version !== PLUGIN_COMPATIBILITY_VERSION) {
+    blockers.push({ code: "MANIFEST_VERSION_MISMATCH", message: `The plugin manifest compatibility version must be exactly ${PLUGIN_COMPATIBILITY_VERSION}.`, expected: PLUGIN_COMPATIBILITY_VERSION, actual: manifest.version });
   }
   const files = new Set(presentFiles);
   const missingFiles = REQUIRED_PLUGIN_FILES.filter((file) => !files.has(file));
@@ -107,7 +110,16 @@ export function planMarketplace({ marketplaceDocument, configuredMarketplaces, h
   else {
     const current = matches[0].entry;
     if (current?.source?.source !== "local" || current?.source?.path !== PLUGIN_SOURCE_PATH) throw installError("PLUGIN_SOURCE_CONFLICT", `${PLUGIN_NAME} already points to a different marketplace source.`);
-    entryState = "matched";
+    const canonicalPolicy = { installation: "AVAILABLE", authentication: "ON_INSTALL" };
+    const policyMatches = current?.policy?.installation === canonicalPolicy.installation && current?.policy?.authentication === canonicalPolicy.authentication;
+    const categoryMatches = current?.category === "Developer Tools";
+    if (!policyMatches || !categoryMatches) {
+      // Preserve extension fields while repairing only the canonical contract fields.
+      document.plugins[matches[0].index] = { ...current, policy: { ...(current?.policy ?? {}), ...canonicalPolicy }, category: "Developer Tools" };
+      entryState = "canonicalized";
+    } else {
+      entryState = "matched";
+    }
   }
   const before = marketplaceDocument === null ? null : JSON.stringify(marketplaceDocument);
   return { name: document.name, document, entryState, changed: before !== JSON.stringify(document) };
@@ -153,7 +165,7 @@ function normalizeConfiguredMarketplaces(value) {
 }
 
 function validateMarketplaceDocument(document) {
-  if (!document || Array.isArray(document) || typeof document !== "object" || typeof document.name !== "string" || !Array.isArray(document.plugins)) {
+  if (!document || Array.isArray(document) || typeof document !== "object" || typeof document.name !== "string" || document.name.trim().length === 0 || !Array.isArray(document.plugins)) {
     throw installError("MARKETPLACE_INVALID", "Personal marketplace must be an object with a non-empty name and plugins array.");
   }
 }
