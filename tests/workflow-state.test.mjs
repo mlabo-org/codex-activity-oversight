@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { spawn, spawnSync } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
@@ -237,6 +237,49 @@ test("unrelated intake retains runtime history without treating it as active sta
     assert.equal(doctor.status, 0, doctor.stderr);
     assert.match(doctor.stdout, /runtime events 0 active, \d+ historical/);
     assert.ok(readRuntimeEvents(repo).length > 0);
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
+
+test("related intake preserves durable progress and rejects identity conflicts", () => {
+  const repo = makeTempGitRepo();
+  try {
+    intake(repo, { taskId: "continue-state" });
+    const progress = runCli(repo, ["progress", ...identityArgs("continue-state"), "--item-id", "continue-state.3", "--status", "completed", "--summary", "done", "--evidence-refs", "test:continuation result:pass"]);
+    assert.equal(progress.status, 0, progress.stderr);
+    const before = Object.fromEntries(["task.md", "todo.md", "decisions.md", "work.md", "audit.md", "handoff.md", "ledger.md"].map((name) => [name, readState(repo, name)]));
+    const continued = runCli(repo, ["intake", "--task", "changed wording", "--task-id", "continue-state", "--epoch", "e1", "--scope", "README.md", "--root-thread-id", ROOT_THREAD_ID, "--state-transition", "continue-related"]);
+    assert.equal(continued.status, 0, continued.stderr);
+    for (const [name, content] of Object.entries(before)) assert.equal(readState(repo, name), content, name);
+
+    for (const [scope, rootThreadId, expected] of [["other.md", ROOT_THREAD_ID, /exact active/], ["README.md", CHILD_THREAD_ID, /exact active/]]) {
+      const rejected = runCli(repo, ["intake", "--task", "changed", "--task-id", "continue-state", "--epoch", "e1", "--scope", scope, "--root-thread-id", rootThreadId, "--state-transition", "continue-related"]);
+      assert.notEqual(rejected.status, 0);
+      assert.match(rejected.stderr, expected);
+    }
+    const unrelated = runCli(repo, ["intake", "--task", "wrong transition", "--task-id", "continue-state", "--epoch", "e1", "--scope", "README.md", "--root-thread-id", ROOT_THREAD_ID, "--state-transition", "initialize-unrelated"]);
+    assert.notEqual(unrelated.status, 0);
+    assert.match(unrelated.stderr, /conflicts with the existing active task identity/);
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
+
+test("semantic transaction journal restores a prior snapshot on the next operation", () => {
+  const repo = makeTempGitRepo();
+  try {
+    intake(repo, { taskId: "journal-state" });
+    const files = ["todo.md", "ledger.md", "work.md"];
+    const snapshot = files.map((name) => ({ name, existed: true, content: readState(repo, name) }));
+    writeFileSync(path.join(repo, ".CAO", ".semantic-write-journal.json"), JSON.stringify({ version: 1, files: snapshot.map((entry) => ({ ...entry, content: Buffer.from(entry.content).toString("base64") })) }));
+    writeFileSync(path.join(repo, ".CAO", "todo.md"), "corrupt\n");
+    const result = runCli(repo, ["progress", ...identityArgs("journal-state"), "--item-id", "journal-state.3", "--status", "completed", "--summary", "recovered", "--evidence-refs", "test:journal result:pass"]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(readState(repo, "todo.md"), /^- \[x\] journal-state\.3/m);
+    assert.doesNotMatch(readState(repo, "todo.md"), /corrupt/);
+    assert.equal((readState(repo, "ledger.md").match(/^- type: progress-update$/gm) ?? []).length, 1);
+    assert.equal(existsSync(path.join(repo, ".CAO", ".semantic-write-journal.json")), false);
   } finally {
     rmSync(repo, { recursive: true, force: true });
   }

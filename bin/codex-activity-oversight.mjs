@@ -159,8 +159,15 @@ function intake(args) {
   if (!new Set(["continue-related", "initialize-unrelated"]).has(stateTransition)) {
     throw new CliError("--state-transition must be continue-related or initialize-unrelated");
   }
-  if (stateTransition === "continue-related" && previous && (previous.taskId !== taskId || previous.epoch !== epoch)) {
-    throw new CliError("continue-related requires the active task_id and epoch");
+  if (stateTransition === "continue-related") {
+    if (!previous) throw new CliError("continue-related requires an existing active task");
+    if (previous.taskId !== taskId || previous.epoch !== epoch || previous.rootThreadId !== rootThreadId || previous.scope !== scope) {
+      throw new CliError("continue-related requires the exact active task_id, epoch, root_thread_id, and scope");
+    }
+  }
+  if (stateTransition === "initialize-unrelated" && previous
+      && previous.taskId === taskId && previous.epoch === epoch) {
+    throw new CliError("initialize-unrelated conflicts with the existing active task identity");
   }
   const timestamp = new Date().toISOString();
   const value = {
@@ -180,18 +187,32 @@ function intake(args) {
     stateTransition,
     timestamp,
   };
-  for (const [name, body] of Object.entries(renderStateDocs(value))) {
-    upsertGenerated(path.join(state.stateDir, name), body);
+  if (stateTransition === "continue-related") {
+    process.stdout.write([
+      `ok intake: preserved ${state.stateDir}`,
+      `ok task_id: ${taskId}`,
+      `ok epoch: ${epoch}`,
+      `ok scope: ${scope}`,
+      `ok state_transition: ${stateTransition}`,
+      `ok root_thread_id: ${rootThreadId}`,
+    ].join("\n") + "\n");
+    return;
   }
-  ensureLedger(state.stateDir);
-  appendPacket(state.stateDir, "state-intake", {
-    task_id: taskId,
-    epoch,
-    scope,
-    state_transition: stateTransition,
-    root_thread_id: rootThreadId,
-    evidence_refs: evidenceRef,
-    recorded_at: timestamp,
+  const stateFiles = [...REQUIRED_STATE_FILES];
+  semanticTransaction(state.stateDir, stateFiles, () => {
+    for (const [name, body] of Object.entries(renderStateDocs(value))) {
+      upsertGenerated(path.join(state.stateDir, name), body);
+    }
+    ensureLedger(state.stateDir);
+    appendPacket(state.stateDir, "state-intake", {
+      task_id: taskId,
+      epoch,
+      scope,
+      state_transition: stateTransition,
+      root_thread_id: rootThreadId,
+      evidence_refs: evidenceRef,
+      recorded_at: timestamp,
+    });
   });
   process.stdout.write([
     `ok intake: updated ${state.stateDir}`,
@@ -344,8 +365,10 @@ function beginWork(args) {
     scope: packet.scope,
     recorded_at: new Date().toISOString(),
   };
-  appendPacket(packet.stateDir, "work-begin", fields);
-  appendStateSection(path.join(packet.stateDir, "work.md"), `Open Work ${workId}`, fields);
+  semanticTransaction(packet.stateDir, ["ledger.md", "work.md"], () => {
+    appendPacket(packet.stateDir, "work-begin", fields);
+    appendStateSection(path.join(packet.stateDir, "work.md"), `Open Work ${workId}`, fields);
+  });
   process.stdout.write(`ok work-begin: ${workId}\nok status: open\n`);
 }
 
@@ -378,8 +401,10 @@ function finishWork(args, status) {
     scope: packet.scope,
     recorded_at: new Date().toISOString(),
   };
-  appendPacket(packet.stateDir, "work-result", fields);
-  appendStateSection(path.join(packet.stateDir, "work.md"), `Work Result ${workId}`, fields);
+  semanticTransaction(packet.stateDir, ["ledger.md", "work.md"], () => {
+    appendPacket(packet.stateDir, "work-result", fields);
+    appendStateSection(path.join(packet.stateDir, "work.md"), `Work Result ${workId}`, fields);
+  });
   process.stdout.write(`ok work-result: ${workId}\nok status: ${status}\n`);
 }
 
@@ -397,8 +422,10 @@ function decide(args) {
     scope: packet.scope,
     recorded_at: new Date().toISOString(),
   };
-  appendPacket(packet.stateDir, "accepted-decision", fields);
-  appendStateSection(path.join(packet.stateDir, "decisions.md"), `Accepted Decision ${decisionId}`, fields);
+  semanticTransaction(packet.stateDir, ["ledger.md", "decisions.md"], () => {
+    appendPacket(packet.stateDir, "accepted-decision", fields);
+    appendStateSection(path.join(packet.stateDir, "decisions.md"), `Accepted Decision ${decisionId}`, fields);
+  });
   process.stdout.write(`ok decision: ${decisionId}\n`);
 }
 
@@ -417,7 +444,6 @@ function progress(args) {
   const pattern = new RegExp(`^- \\[([ x])\\] ${escapeRegExp(itemId)}(?=\\s|$)`, "m");
   if (!pattern.test(current)) throw new CliError(`unknown TODO item: ${itemId}`);
   const checked = status === "completed" ? "x" : " ";
-  atomicWrite(todoPath, current.replace(pattern, `- [${checked}] ${itemId}`));
   const fields = {
     item_id: itemId,
     status,
@@ -428,8 +454,11 @@ function progress(args) {
     scope: packet.scope,
     recorded_at: new Date().toISOString(),
   };
-  appendPacket(packet.stateDir, "progress-update", fields);
-  appendStateSection(path.join(packet.stateDir, "work.md"), `Progress ${itemId}`, fields);
+  semanticTransaction(packet.stateDir, ["todo.md", "ledger.md", "work.md"], () => {
+    atomicWrite(todoPath, current.replace(pattern, `- [${checked}] ${itemId}`));
+    appendPacket(packet.stateDir, "progress-update", fields);
+    appendStateSection(path.join(packet.stateDir, "work.md"), `Progress ${itemId}`, fields);
+  });
   process.stdout.write(`ok progress: ${itemId}\nok status: ${status}\n`);
 }
 
@@ -460,8 +489,10 @@ function verify(args) {
     scope: packet.scope,
     recorded_at: new Date().toISOString(),
   };
-  appendPacket(packet.stateDir, "verification-observation", fields);
-  appendStateSection(path.join(packet.stateDir, "audit.md"), `Verification ${checkId}`, fields);
+  semanticTransaction(packet.stateDir, ["ledger.md", "audit.md"], () => {
+    appendPacket(packet.stateDir, "verification-observation", fields);
+    appendStateSection(path.join(packet.stateDir, "audit.md"), `Verification ${checkId}`, fields);
+  });
   process.stdout.write(`ok verification: ${checkId}\nok status: ${status}\n`);
 }
 
@@ -498,7 +529,7 @@ function finalize(args) {
   const completedTodo = currentTodo.replace(/^- \[ \]/gm, "- [x]");
   const recordedAt = new Date().toISOString();
   const completedHandoff = renderCompletedHandoff(packet, active, taskText, recordedAt);
-  try {
+  semanticTransaction(packet.stateDir, ["todo.md", "handoff.md", "ledger.md"], () => {
     atomicWrite(todoPath, completedTodo);
     atomicWrite(handoffPath, completedHandoff);
     appendPacket(packet.stateDir, "task-finalization", {
@@ -511,11 +542,7 @@ function finalize(args) {
       source_spec_coverage: sourceSpecCoverage,
       recorded_at: recordedAt,
     });
-  } catch (error) {
-    if (readFileSync(todoPath, "utf8") !== currentTodo) atomicWrite(todoPath, currentTodo);
-    if (readFileSync(handoffPath, "utf8") !== currentHandoff) atomicWrite(handoffPath, currentHandoff);
-    throw error;
-  }
+  });
   process.stdout.write(`ok task-finalization: ${packet.taskId}\nok status: completed\n`);
 }
 
@@ -758,7 +785,8 @@ function recordHookObservation(stateDir, active, payload, bindingStatus, binding
     agent_transcript_path: payload.agent_transcript_path ?? null,
     last_assistant_message_present: typeof payload.last_assistant_message === "string" && payload.last_assistant_message.length > 0,
   };
-  const eventKey = ["hook", safeHook.hook_event_name, safeHook.session_id, safeHook.turn_id, safeHook.agent_id].join(":");
+  // JSON preserves tuple boundaries and nullable values even when IDs contain colons.
+  const eventKey = `hook:${JSON.stringify([safeHook.hook_event_name, safeHook.session_id, safeHook.turn_id, safeHook.agent_id])}`;
   writeRuntimeEvent(stateDir, {
     version: RUNTIME_EVENT_VERSION,
     event_key: eventKey,
@@ -1045,9 +1073,49 @@ function withSemanticWriteLock(args, operation) {
     }
   }
   try {
+    recoverSemanticTransaction(stateDir);
     return operation();
   } finally {
     rmdirSync(lockDir);
+  }
+}
+
+const SEMANTIC_TXN_FILE = ".semantic-write-journal.json";
+
+function semanticTransaction(stateDir, names, operation) {
+  const journalPath = path.join(stateDir, SEMANTIC_TXN_FILE);
+  recoverSemanticTransaction(stateDir);
+  const uniqueNames = [...new Set(names)];
+  const snapshot = uniqueNames.map((name) => {
+    const file = path.join(stateDir, name);
+    return { name, existed: existsSync(file), content: existsSync(file) ? readFileSync(file).toString("base64") : null };
+  });
+  atomicWrite(journalPath, JSON.stringify({ version: 1, files: snapshot }));
+  try {
+    const result = operation();
+    unlinkSync(journalPath);
+    return result;
+  } catch (error) {
+    restoreSemanticSnapshot(stateDir, snapshot);
+    if (existsSync(journalPath)) unlinkSync(journalPath);
+    throw error;
+  }
+}
+
+function recoverSemanticTransaction(stateDir) {
+  const journalPath = path.join(stateDir, SEMANTIC_TXN_FILE);
+  if (!existsSync(journalPath)) return;
+  const journal = JSON.parse(readFileSync(journalPath, "utf8"));
+  if (journal.version !== 1 || !Array.isArray(journal.files)) throw new CliError(`invalid semantic transaction journal: ${journalPath}`);
+  restoreSemanticSnapshot(stateDir, journal.files);
+  unlinkSync(journalPath);
+}
+
+function restoreSemanticSnapshot(stateDir, snapshot) {
+  for (const entry of snapshot) {
+    const file = path.join(stateDir, entry.name);
+    if (entry.existed) atomicWrite(file, Buffer.from(entry.content, "base64"));
+    else if (existsSync(file)) unlinkSync(file);
   }
 }
 
