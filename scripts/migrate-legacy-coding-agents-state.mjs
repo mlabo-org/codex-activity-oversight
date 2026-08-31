@@ -44,7 +44,7 @@ const DEFAULT_ROOTS = [
   },
   {
     label: "skill source canonical location",
-    path: path.join(os.homedir(), ".codex", "skills"),
+    path: path.join(os.homedir(), ".agents", "skills"),
   },
 ];
 
