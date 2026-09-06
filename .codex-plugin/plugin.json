@@ -1,7 +1,7 @@
 {
   "name": "codex-activity-oversight",
   "version": "0.1.0",
-  "description": "Explicit-only Codex Activity Oversight (CAO) for exact-thread durable .CAO state control while native Codex owns all execution topology.",
+  "description": "Codex Activity Oversight (CAO) for exact-thread durable .CAO state control, selected explicitly or by Native Codex when interruption, resume, large refactor, dependency, or decision tracking materially helps; native Codex owns all execution topology.",
   "homepage": "https://github.com/mlabo-org/codex-activity-oversight#readme",
   "repository": "https://github.com/mlabo-org/codex-activity-oversight",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "category": "Developer Tools",
     "websiteURL": "https://github.com/mlabo-org/codex-activity-oversight",
     "capabilities": [
-      "CAO Explicit Activation",
+      "CAO Explicit Or Agent-Selected Activation",
       "Deterministic .CAO State Control",
       "Exact Root-Thread State Binding",
       "Official Hook Event Capture",
@@ -43,7 +43,7 @@
       "Completed Task Handoff"
     ],
     "defaultPrompt": [
-      "CAO bind this coding task to exact .CAO state while native Codex chooses execution.",
+      "CAO bind this coding task to exact .CAO state while native Codex chooses execution when durable state materially helps.",
       "Use $codex-activity-oversight for Hook-triggered state control and app-server reconciliation.",
       "Continue the active CAO workflow from its exact durable state."
     ],

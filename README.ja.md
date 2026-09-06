@@ -10,7 +10,7 @@ CAO自身はsubagentを起動・選択・配分しません。タスク分解、
 
 ## 有効化条件
 
-先頭の `CAO` / `CAOで` 指示、`$codex-activity-oversight`、skillの明示選択、またはactiveなCAOタスクの明示的続行時だけ有効になります。一般的なコーディング／subagent依頼、偶然の「CAO」表記、`.CAO/` の存在だけでは有効になりません。
+先頭の `CAO` / `CAOで` 指示、`$codex-activity-oversight`、skillの明示選択、またはactiveなCAOタスクの明示的続行で有効になります。加えて、Native Codexが大規模リファクタ、依存関係・判断の多い変更、予想される中断と再開で永続状態が実質的に役立つと判断した場合も選択できます。選択理由を短く記録し、ユーザーの明示的なオプトアウトには従います。短い自己完結型のコーディング、一般的なsubagent依頼、偶然の「CAO」表記、`.CAO/` の存在だけでは有効にしません。
 
 ## 状態管制
 
@@ -66,7 +66,7 @@ CAOは対象repoの `.git/info/exclude` に `.CAO/` を追加し、tracked `.git
 
 ## 標準workflow
 
-1. `intake` でtaskとroot threadを束縛します。
+1. `intake` でtaskとroot threadを束縛します。作業途中から採用する場合は、実際に完了した事実と未完了の事実を先に整理します。`interrupted` のwork resultは中断記録であり、finalizationではありません。
 2. `context` を読み、実質責務ごとに `begin-work` を開きます。
 3. ネイティブCodexで実行・統合します。
 4. work IDごとに1つのterminal resultと、factになったdecision／progressを記録します。

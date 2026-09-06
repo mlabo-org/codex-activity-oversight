@@ -10,7 +10,7 @@ function read(relativePath) {
   return readFileSync(path.join(repoRoot, relativePath), "utf8");
 }
 
-test("public metadata exposes explicit state control without owning native execution topology", () => {
+test("public metadata exposes flexible state control without owning native execution topology", () => {
   const manifest = JSON.parse(read(".codex-plugin/plugin.json"));
   const creator = JSON.parse(read("creator-contract.json"));
   const capability = JSON.parse(read("local-capability-manifest.json"));
@@ -18,7 +18,7 @@ test("public metadata exposes explicit state control without owning native execu
   const metadata = read("skills/codex-activity-oversight/agents/openai.yaml");
 
   assert.equal(manifest.name, "codex-activity-oversight");
-  assert.match(manifest.description, /explicit-only.*state control/i);
+  assert.match(manifest.description, /state control.*selected explicitly or by Native Codex/i);
   assert.ok(manifest.interface.capabilities.includes("Exact Root-Thread State Binding"));
   assert.ok(manifest.interface.capabilities.includes("Official Hook Event Capture"));
   assert.ok(manifest.interface.capabilities.includes("App-Server Runtime Reconciliation"));
@@ -32,12 +32,24 @@ test("public metadata exposes explicit state control without owning native execu
   assert.match(skill, /exact bound root thread tree/i);
   assert.match(skill, /must not infer semantic completion/i);
   assert.match(metadata, /Durable CAO state control/);
+  assert.match(skill, /Native Codex may also select CAO.*large refactor.*interruption and resume/i);
+  assert.match(creator.routing.non_use_conditions.join("\n"), /short self-contained generic coding/i);
+  assert.equal(JSON.parse(read("schemas/v1/leaves/codex-activity-oversight-input.schema.json")).properties.activation.enum.includes("agent-selected-state-control"), true);
 
   assert.equal(creator.workflow_contract.execution_owner, "native-codex");
   assert.equal(creator.workflow_contract.state_owner, "codex-activity-oversight");
   assert.match(creator.workflow_contract.runtime_observation_rule, /Hooks.*app-server/i);
   assert.equal(capability.capabilities[0].executionClass, "state_controller");
   assert.match(capability.capabilities[0].runtimeBinding.instruction, /exact root thread/i);
+});
+
+test("activation schema accepts explicit and agent-selected reasons and rejects unknown reasons", () => {
+  const input = JSON.parse(read("schemas/v1/leaves/codex-activity-oversight-input.schema.json"));
+  const allowed = input.properties.activation.enum;
+  assert.ok(allowed.includes("explicit-cao-prefix"));
+  assert.ok(allowed.includes("active-workflow-continuation"));
+  assert.ok(allowed.includes("agent-selected-state-control"));
+  assert.ok(!allowed.includes("automatic-always-on"));
 });
 
 test("plugin hooks cover root rehydration, descendant lifecycle, and known-work stop control", () => {

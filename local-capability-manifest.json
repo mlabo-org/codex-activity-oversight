@@ -8,16 +8,16 @@
     {
       "leafId": "codex-activity-oversight",
       "title": "Codex Activity Oversight",
-      "description": "Bind an explicitly activated coding objective to deterministic .CAO state while Native Codex exclusively owns official subagent execution topology.",
+      "description": "Bind an explicitly selected or agent-selected coding objective to deterministic .CAO state when durable state materially helps, while Native Codex exclusively owns official subagent execution topology.",
       "executionClass": "state_controller",
       "runtimeBinding": {
         "kind": "state_controller",
-        "instruction": "Activate only from an explicit CAO request or explicit active-workflow continuation. Bind .CAO to the exact root thread, use official Hooks for immediate root and descendant events, use official app-server readback for typed reconciliation receipts, and expose incomplete lifecycle observations without inferring semantic completion. Bind passed verification to the exact active contract IDs it covers and finalize into a completed handoff. Never launch workers, select models, prescribe topology, flatten descendants, or infer semantic completion from runtime completion."
+        "instruction": "Activate from an explicit CAO request, explicit active-workflow continuation, or Native Codex selection when durable state materially helps a large refactor, dependency or decision-heavy change, or expected interruption and resume; honor an explicit user opt-out. Bind .CAO to the exact root thread, use official Hooks for immediate root and descendant events, use official app-server readback for typed reconciliation receipts, and expose incomplete lifecycle observations without inferring semantic completion. Bind passed verification to the exact active contract IDs it covers and finalize into a completed handoff. Never launch workers, select models, prescribe topology, flatten descendants, or infer semantic completion from runtime completion."
       },
       "authorityRequests": [
         {
-          "authority": "explicit-cao-state-control-activation",
-          "reason": "CAO is opt-in and must not bind state from directory presence alone."
+          "authority": "cao-state-control-activation",
+          "reason": "CAO binds state only after explicit user selection or a Native Codex decision that durable state materially helps; directory presence alone is insufficient."
         },
         {
           "authority": "jobsite-workflow-state",

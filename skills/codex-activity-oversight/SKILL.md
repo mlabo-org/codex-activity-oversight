@@ -1,6 +1,6 @@
 ---
 name: codex-activity-oversight
-description: Control explicit CAO / CAOで / $codex-activity-oversight workflows through exact-thread .CAO state, Hook rehydration, and app-server reconciliation. Native Codex exclusively owns official subagent execution topology; generic coding does not trigger CAO.
+description: Control CAO / CAOで / $codex-activity-oversight workflows, or agent-selected durable state for large refactors, dependency or decision tracking, interruption, and resume, through exact-thread .CAO state, Hooks, and app-server reconciliation. Native Codex owns execution topology.
 ---
 
 # Codex Activity Oversight
@@ -11,9 +11,9 @@ CAO means Codex Activity Oversight: an exact-thread durable state-control plane,
 
 ## Activation
 
-Activate only when the current user explicitly selects this workflow through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit bundled-skill selection, or an explicit continuation of an already active CAO workflow.
+Activate when the current user explicitly selects this workflow through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit bundled-skill selection, or an explicit continuation of an already active CAO workflow. Native Codex may also select CAO when it determines that durable state materially improves a large refactor, dependency or decision-heavy change, or an expected interruption and resume. Record a brief reason for that selection and honor an explicit user opt-out.
 
-Do not activate from plugin inspection, a generic coding request, a generic subagent request, incidental `CAO` text, `.CAO` directory presence, or prior state alone.
+Do not activate for a short, self-contained coding request merely because CAO exists, and do not keep CAO active for unrelated work. Do not activate from plugin inspection, a generic subagent request, incidental `CAO` text, `.CAO` directory presence, or prior state alone.
 
 ## Responsibility boundary
 
@@ -26,7 +26,7 @@ Do not activate from plugin inspection, a generic coding request, a generic suba
 
 1. Resolve the target workspace and read applicable instructions.
 2. Inspect `.CAO/` first. If it is absent and `.coding-agents/` exists, preserve the legacy directory and let `intake` copy it non-destructively.
-3. Run `intake` before material work. Bind the current root with `--root-thread-id "$CODEX_THREAD_ID"`; the CLI uses that environment value by default when available.
+3. Run `intake` before material work. Bind the current root with `--root-thread-id "$CODEX_THREAD_ID"`; the CLI uses that environment value by default when available. For a mid-work adoption, first record the actual completed and uncompleted facts in the task input, then use `intake` to preserve them without treating an interruption as finalization.
 4. Read `context`. Treat `.CAO/task.md`, `todo.md`, `decisions.md`, `work.md`, `audit.md`, `ledger.md`, and `runtime-events/` as durable task state.
 5. Open each independently meaningful material responsibility with `begin-work` before production. This is a semantic state transaction, not a dispatch instruction.
 6. Let native Codex choose and use the current execution capabilities. Do not wrap `spawn_agent`, prescribe a model, flatten descendants, or reconstruct peer coordination.

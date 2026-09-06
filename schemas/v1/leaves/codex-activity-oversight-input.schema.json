@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "codex-activity-oversight/codex-activity-oversight-input/v1",
   "title": "Codex Activity Oversight state-control input",
-  "description": "An explicitly activated coding objective bound to an exact Codex root thread and deterministic .CAO state transition.",
+  "description": "A coding objective selected explicitly or by Native Codex for durable state control, bound to an exact Codex root thread and deterministic .CAO state transition.",
   "type": "object",
   "required": [
     "activation",
@@ -14,13 +14,14 @@
   "properties": {
     "activation": {
       "type": "string",
-      "description": "The explicit current-user selection of CAO or explicit continuation of an active CAO workflow.",
+      "description": "The activation reason: an explicit current-user selection, continuation of an active CAO workflow, or Native Codex selection because durable state materially helps the task.",
       "enum": [
         "explicit-cao-prefix",
         "explicit-dollar-skill",
         "explicit-bundled-skill",
         "explicit-plugin-workflow",
-        "active-workflow-continuation"
+        "active-workflow-continuation",
+        "agent-selected-state-control"
       ]
     },
     "objective": {

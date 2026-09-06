@@ -10,7 +10,7 @@ CAO does not launch, select, or route subagents. Native Codex owns decomposition
 
 ## Activation
 
-CAO activates only through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit skill selection, or explicit continuation of an active CAO task. Generic coding, generic subagent requests, incidental “CAO” text, and `.CAO/` presence alone do not activate it.
+CAO activates through a leading `CAO` / `CAOで` request, `$codex-activity-oversight`, explicit skill selection, or explicit continuation of an active CAO task. Native Codex may also select it when durable state materially helps a large refactor, dependency or decision-heavy change, or expected interruption and resume; it records a brief reason and honors an explicit user opt-out. Short self-contained coding, generic subagent requests, incidental “CAO” text, and `.CAO/` presence alone do not activate it.
 
 ## State control
 
@@ -66,7 +66,7 @@ CAO adds `.CAO/` to the target repository’s `.git/info/exclude`, keeping local
 
 ## Typical workflow
 
-1. `intake` the task and bind its root thread.
+1. `intake` the task and bind its root thread. When adopting CAO mid-work, capture the actual completed and uncompleted facts first; an interrupted work result remains interrupted and is not finalization.
 2. Read `context`; open each material responsibility with `begin-work`.
 3. Let native Codex execute and integrate the work.
 4. Record one terminal result per work ID and any factual decisions or progress.

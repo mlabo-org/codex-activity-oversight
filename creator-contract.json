@@ -4,20 +4,21 @@
   "capability_id": "codex-activity-oversight",
   "official_creator": "plugin-creator",
   "routing": {
-    "task_class": "Explicitly selected CAO durable state control for native Codex coding work",
+    "task_class": "Explicitly selected or agent-selected CAO durable state control for native Codex coding work when durable state materially helps",
     "natural_language_triggers": [
       "CAO <coding objective>",
       "CAOで<coding objective>",
       "$codex-activity-oversight",
       "Use Codex Activity Oversight",
-      "continue this active CAO workflow"
+      "continue this active CAO workflow",
+      "large refactor or interruption-resume work where durable state materially helps"
     ],
-    "primary_route": "Bind the explicit objective and exact root thread into .CAO before material work; rehydrate matching roots and descendants through official Hooks; reconcile native thread ancestry and collaboration facts through official app-server readback; record semantic work, decisions, progress, evidence, finalization, and handoff without owning execution topology.",
+    "primary_route": "Bind the selected objective and exact root thread into .CAO before material work; rehydrate matching roots and descendants through official Hooks; reconcile native thread ancestry and collaboration facts through official app-server readback; record semantic work, decisions, progress, evidence, finalization, and handoff without owning execution topology.",
     "fallback_conditions": [
       "If exact Hook or app-server ancestry is unavailable, record the event as unresolved, inject no state into that event, preserve .CAO, and stop finalization until reconciliation succeeds."
     ],
     "non_use_conditions": [
-      "Do not activate from plugin inspection, generic coding, generic subagent use, incidental CAO text, or .CAO presence alone.",
+      "Do not activate from plugin inspection, a short self-contained generic coding task, generic subagent use, incidental CAO text, or .CAO presence alone; honor an explicit user opt-out.",
       "Do not use CAO as a worker launcher, model router, hierarchy manager, or acceptance substitute."
     ],
     "discovery": {
@@ -59,10 +60,10 @@
             "interface": {
               "display_name": "Codex Activity Oversight",
               "short_description": "Durable CAO state control for native Codex work",
-              "default_prompt": "Use $codex-activity-oversight to bind this coding task to exact .CAO state; Native Codex exclusively owns official subagent execution."
+              "default_prompt": "Use $codex-activity-oversight to bind a selected coding task to exact .CAO state when durable state materially helps; Native Codex exclusively owns official subagent execution."
             },
             "policy": {
-              "allow_implicit_invocation": false
+              "allow_implicit_invocation": true
             }
           }
         }
